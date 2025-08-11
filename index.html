@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Portal - JSONP版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        /* ナビゲーションメニュー */
+        .navigation {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            overflow-x: auto;
+        }
+        
+        .nav-item {
+            flex-shrink: 0;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+        
+        .nav-link:hover {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .nav-link.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background-color: #f0f4ff;
+        }
+        
+        .nav-icon {
+            margin-right: 8px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .error {
+            background: #ffe6e6;
+            color: #d00;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .success {
+            background: #e8f5e8;
+            color: #4a7c59;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #444;
+        }
+        
+        .pdf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .pdf-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .pdf-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .pdf-thumbnail {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            position: relative;
+        }
+        
+        .pdf-thumbnail::after {
+            content: 'PDF';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.3em;
+            font-weight: bold;
+        }
+        
+        .pdf-info {
+            padding: 20px;
+        }
+        
+        .pdf-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .pdf-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+        
+        .pdf-content {
+            color: #777;
+            font-size: 0.95em;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .pdf-filename {
+            color: #999;
+            font-size: 0.8em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .reload-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: background 0.3s;
+        }
+        
+        .reload-btn:hover {
+            background: #5a67d8;
+        }
+        
+        .api-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .api-url {
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .pdf-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .nav-container {
+                padding: 0 15px;
+            }
+            
+            .nav-link {
+                padding: 12px 16px;
+                font-size: 0.9em;
+            }
+            
+            .nav-menu {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ナビゲーションメニュー -->
+    <nav class="navigation">
+        <div class="nav-container">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">
+                        <span class="nav-icon">🏠</span>Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="venues.html" class="nav-link">
+                        <span class="nav-icon">📍</span>会場一覧
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="detail.html" class="nav-link">
+                        <span class="nav-icon">📄</span>詳細ページ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="members.html" class="nav-link">
+                        <span class="nav-icon">👥</span>会員専用
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="courses.html" class="nav-link">
+                        <span class="nav-icon">📚</span>講座専用
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link">
+                        <span class="nav-icon">📧</span>問合せ
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1 class="section-title">📚 Document Portal (JSONP版)</h1>
+        
+        <div class="api-info">
+            <h3>🔧 Google Apps Script API設定</h3>
+            <p><strong>現在のAPI URL:</strong></p>
+            <div class="api-url" id="current-api-url">未設定</div>
+            <p><small>※ 実際のGoogle Apps ScriptのWeb APIのURLに変更してください</small></p>
+        </div>
+        
+        <button class="reload-btn" onclick="loadDocuments()">📥 データを再読み込み</button>
+        
+        <div id="status" class="loading">Google Apps Scriptからデータを読み込み中...</div>
+        <div id="pdf-container"></div>
+    </div>
+
+    <script>
+        // Google Apps ScriptのWeb API URL（実際のURLに変更してください）
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec';
+        
+        // 現在のAPI URLを表示
+        document.getElementById('current-api-url').textContent = https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec;
+        
+        let documentsData = [];
+        
+        // JSONP用のコールバック関数
+        function handleDocumentsData(data) {
+            console.log('受信したデータ:', data);
+            documentsData = data;
+            renderDocuments(data);
+            document.getElementById('status').innerHTML = 
+                `<div class="success">✅ ${data.length}件のドキュメントを読み込みました</div>`;
+        }
+        
+        // エラーハンドリング用のタイムアウト
+        function handleLoadError() {
+            document.getElementById('status').innerHTML = `
+                <div class="error">
+                    ❌ データの読み込みに失敗しました<br>
+                    <small>
+                        • Google Apps ScriptのURLが正しく設定されているか確認してください<br>
+                        • ScriptがWebアプリとして公開されているか確認してください<br>
+                        • アクセス権限が「誰でも」に設定されているか確認してください
+                    </small>
+                </div>`;
+        }
+        
+        // JSONPでデータを読み込む
+        function loadDocuments() {
+            document.getElementById('status').innerHTML = 
+                '<div class="loading">🔄 Google Apps Scriptからデータを読み込み中...</div>';
+            document.getElementById('pdf-container').innerHTML = '';
+            
+            // 既存のscriptタグを削除
+            const existingScript = document.getElementById('jsonp-script');
+            if (existingScript) {
+                existingScript.remove();
+            }
+            
+            // エラー用タイムアウトを設定
+            const timeoutId = setTimeout(handleLoadError, 10000); // 10秒でタイムアウト
+            
+            // JSONPスクリプトタグを作成
+            const script = document.createElement('script');
+            script.id = 'jsonp-script';
+            script.src = `${GAS_API_URL}?callback=handleDocumentsData&t=${Date.now()}`;
+            
+            // スクリプトが正常にロードされた場合はタイムアウトをクリア
+            script.onload = () => {
+                clearTimeout(timeoutId);
+            };
+            
+            script.onerror = () => {
+                clearTimeout(timeoutId);
+                handleLoadError();
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        // ドキュメント一覧を描画
+        function renderDocuments(documents) {
+            const container = document.getElementById('pdf-container');
+            
+            if (!documents || documents.length === 0) {
+                container.innerHTML = '<div class="error">📭 表示できるドキュメントがありません</div>';
+                return;
+            }
+            
+            const gridHtml = `
+                <div class="pdf-grid">
+                    ${documents.map(doc => `
+                        <div class="pdf-card" onclick="openDetail('${doc.id}', '${encodeURIComponent(doc.title)}')">
+                            <div class="pdf-thumbnail">📄</div>
+                            <div class="pdf-info">
+                                <div class="pdf-title">${escapeHtml(doc.title)}</div>
+                                <div class="pdf-date">${formatDate(doc.date)}</div>
+                                <div class="pdf-content">${escapeHtml(doc.content)}</div>
+                                <div class="pdf-filename">📎 ${escapeHtml(doc.pdfFileName)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.innerHTML = gridHtml;
+        }
+        
+        // 詳細ページを開く
+        function openDetail(id, title) {
+            // 実際の実装では詳細ページに遷移
+            const doc = documentsData.find(d => d.id == id);
+            if (doc) {
+                // 詳細ページのURL（例：detail.html?id=123）
+                window.open(`detail.html?id=${id}`, '_blank');
+            } else {
+                alert(`詳細ページを開きます: ${decodeURIComponent(title)}`);
+            }
+        }
+        
+        // HTMLエスケープ
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 日付フォーマット
+        function formatDate(dateValue) {
+            if (!dateValue) return '日付不明';
+            
+            try {
+                const date = new Date(dateValue);
+                return date.toLocaleDateString('ja-JP', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateValue.toString();
+            }
+        }
+        
+        // ナビゲーションのアクティブ状態を更新
+        function setActiveNavigation(pageName) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(pageName) || 
+                    (pageName === 'index' && link.getAttribute('href').includes('index.html'))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // ページ読み込み時に実行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 現在のページに基づいてナビゲーションをアクティブ化
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            setActiveNavigation(currentPage.replace('.html', ''));
+            
+            loadDocuments();
+        });
+    </script>
+</body>
+</html>
