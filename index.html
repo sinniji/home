@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ホームページ - Home画面</title>
+    <title>ホームページ</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', 'Helvetica', sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -22,217 +22,248 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
         }
 
-        /* ナビゲーション */
-        nav {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+        /* ナビゲーションバー */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .nav-links {
             display: flex;
-            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
             gap: 2rem;
+            list-style: none;
         }
 
         .nav-links a {
-            color: white;
             text-decoration: none;
+            color: #333;
+            font-weight: 600;
             padding: 0.5rem 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
             transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
 
         .nav-links a:hover {
-            background: rgba(255,255,255,0.2);
+            color: #667eea;
             transform: translateY(-2px);
         }
 
         .nav-links a.active {
-            background: rgba(255,255,255,0.3);
-            font-weight: bold;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
         }
 
         /* メインコンテンツ */
-        main {
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
             padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #2c3e50;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
+        }
+
+        .page-title {
             text-align: center;
-            position: relative;
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(45deg, #3498db, #e74c3c);
-            border-radius: 2px;
-        }
-
-        /* PDFカードグリッド */
+        /* PDFグリッド */
         .pdf-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
 
         .pdf-card {
             background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .pdf-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(45deg, #3498db, #e74c3c);
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .pdf-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .pdf-thumbnail {
             width: 100%;
             height: 200px;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            background: #f8f9fa;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 1rem;
+            border: 2px solid #e9ecef;
             position: relative;
             overflow: hidden;
         }
 
-        .pdf-thumbnail::before {
-            content: '📄';
-            font-size: 4rem;
-            opacity: 0.3;
+        .pdf-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
-        .pdf-thumbnail .date-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(52, 152, 219, 0.9);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .pdf-content {
-            padding: 1.5rem;
+        .pdf-icon {
+            font-size: 3rem;
+            color: #dc3545;
+            opacity: 0.7;
         }
 
         .pdf-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            line-height: 1.4;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+            display: block;
+            transition: color 0.3s ease;
         }
 
-        .pdf-description {
-            color: #7f8c8d;
+        .pdf-title:hover {
+            color: #667eea;
+        }
+
+        .pdf-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pdf-content {
+            color: #666;
+            font-size: 0.95rem;
             line-height: 1.5;
             margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .pdf-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
+        .pdf-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
             text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #3498db, #2980b9);
+        .pdf-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 詳細ページスタイル */
+        .detail-page {
+            display: none;
+        }
+
+        .detail-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .detail-pdf {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .detail-thumbnail {
+            width: 300px;
+            height: 400px;
+            margin: 0 auto 1rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .detail-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .detail-date {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-description {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: #6c757d;
             color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #2980b9, #3498db);
+        .back-button:hover {
+            background: #5a6268;
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(45deg, #c0392b, #e74c3c);
-            transform: translateY(-2px);
-        }
-
-        /* 読み込み状態 */
+        /* ローディングスタイル */
         .loading {
             text-align: center;
-            padding: 3rem;
-            color: #7f8c8d;
+            padding: 2rem;
         }
 
         .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #ecf0f1;
-            border-top: 4px solid #3498db;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
             border-radius: 50%;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin-bottom: 1rem;
+            margin: 0 auto 1rem;
         }
 
         @keyframes spin {
@@ -240,282 +271,227 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* エラー表示 */
-        .error {
-            text-align: center;
-            padding: 3rem;
-            color: #e74c3c;
-        }
-
-        .error-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        /* 空のデータ表示 */
-        .no-data {
-            text-align: center;
-            padding: 3rem;
-            color: #7f8c8d;
-        }
-
-        .no-data-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        /* フッター */
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        /* レスポンシブ */
+        /* レスポンシブデザイン */
         @media (max-width: 768px) {
             .nav-links {
-                flex-direction: column;
                 gap: 1rem;
-            }
-
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
+                font-size: 0.9rem;
             }
 
             .pdf-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            .pdf-actions {
-                flex-direction: column;
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .detail-thumbnail {
+                width: 250px;
+                height: 330px;
+            }
+
+            .detail-title {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ナビゲーション -->
-        <nav>
-            <div class="nav-container">
-                <div class="logo">サンプルサイト</div>
-                <ul class="nav-links">
-                    <li><a href="#" class="active">HOME</a></li>
-                    <li><a href="#">会場一覧</a></li>
-                    <li><a href="#">詳細ページ</a></li>
-                    <li><a href="#">会員専用</a></li>
-                    <li><a href="#">講座専用</a></li>
-                    <li><a href="#">問合せ</a></li>
-                </ul>
-            </div>
+        <!-- ナビゲーションバー -->
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
+                <li><a href="#" onclick="showPage('venues')">会場一覧</a></li>
+                <li><a href="#" onclick="showPage('details')">詳細ページ</a></li>
+                <li><a href="#" onclick="showPage('members')">会員専用</a></li>
+                <li><a href="#" onclick="showPage('courses')">講座専用</a></li>
+                <li><a href="#" onclick="showPage('contact')">問合せ</a></li>
+            </ul>
         </nav>
 
         <!-- メインコンテンツ -->
-        <main>
-            <h2 class="section-title">最新のPDF資料</h2>
-            
-            <!-- 読み込み中表示 -->
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>データを読み込んでいます...</p>
+        <main class="main-content">
+            <!-- ホームページ -->
+            <div id="home-page" class="page">
+                <h1 class="page-title">最新の講座・資料</h1>
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>データを読み込んでいます...</p>
+                </div>
+                <div id="pdf-container" class="pdf-grid"></div>
             </div>
 
-            <!-- エラー表示 -->
-            <div class="error" id="error" style="display: none;">
-                <div class="error-icon">⚠️</div>
-                <p id="errorMessage">データの読み込みに失敗しました</p>
-                <button onclick="loadPDFData()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">再試行</button>
+            <!-- 詳細ページ -->
+            <div id="detail-page" class="page detail-page">
+                <div class="detail-content">
+                    <button class="back-button" onclick="showPage('home')">← 戻る</button>
+                    <div id="detail-content"></div>
+                </div>
             </div>
 
-            <!-- データなし表示 -->
-            <div class="no-data" id="noData" style="display: none;">
-                <div class="no-data-icon">📄</div>
-                <p>表示するデータがありません</p>
+            <!-- その他のページ（プレースホルダー） -->
+            <div id="venues-page" class="page" style="display: none;">
+                <h1 class="page-title">会場一覧</h1>
+                <p>会場一覧ページの内容をここに表示します。</p>
             </div>
 
-            <!-- PDFカードコンテナ -->
-            <div class="pdf-grid" id="pdfGrid" style="display: none;">
-                <!-- ここにスプレッドシートのデータが動的に追加されます -->
+            <div id="members-page" class="page" style="display: none;">
+                <h1 class="page-title">会員専用</h1>
+                <p>会員専用ページの内容をここに表示します。</p>
+            </div>
+
+            <div id="courses-page" class="page" style="display: none;">
+                <h1 class="page-title">講座専用</h1>
+                <p>講座専用ページの内容をここに表示します。</p>
+            </div>
+
+            <div id="contact-page" class="page" style="display: none;">
+                <h1 class="page-title">問合せ</h1>
+                <p>問合せページの内容をここに表示します。</p>
             </div>
         </main>
-
-        <!-- フッター -->
-        <footer>
-            <p>&copy; 2025 サンプルサイト. All rights reserved. | Powered by Google Apps Script & GitHub Pages</p>
-        </footer>
     </div>
 
     <script>
-        // Google Apps Script WebアプリのURL
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyq7Fo_ct7Np8nJqveBnI2dUIoS7UcHv27WJ_Gns1yAVdloax-Doxq4qPt5Qakt3ftx/exec';
+        // 設定
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzdau9dPTm63euUx2V_MTwjJSx52038GX-RUIgR9QkDoeDK5BcYTYS4iYQ6XUshyjB0/exec';
+        let pdfData = [];
 
-        // ページ読み込み時にデータを取得
-        document.addEventListener('DOMContentLoaded', function() {
-            loadPDFData();
-        });
+        // ページ切り替え機能
+        function showPage(pageId) {
+            // すべてのページを非表示
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
 
-        /**
-         * Google Apps Scriptからデータを取得してPDFカードを表示
-         */
-        async function loadPDFData() {
-            try {
-                showLoading();
-                
-                console.log('データを取得中...', GAS_API_URL);
-                
-                // GASからデータを取得
-                const response = await fetch(`${GAS_API_URL}?action=getAll&t=${Date.now()}`, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                    }
-                });
+            // ナビゲーションリンクのアクティブ状態を更新
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
-                }
+            // 指定されたページを表示
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            }
 
-                const data = await response.json();
-                console.log('取得したデータ:', data);
+            // クリックされたリンクをアクティブにする
+            event.target.classList.add('active');
 
-                // エラーレスポンスの場合
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // データが配列でない場合
-                if (!Array.isArray(data)) {
-                    throw new Error('データ形式が不正です');
-                }
-
-                hideLoading();
-
-                if (data.length === 0) {
-                    showNoData();
-                } else {
-                    renderPDFCards(data);
-                }
-
-            } catch (error) {
-                console.error('データ取得エラー:', error);
-                hideLoading();
-                showError(error.message);
+            // ホームページの場合はデータを読み込む
+            if (pageId === 'home') {
+                loadPdfData();
             }
         }
 
-        /**
-         * PDFカードをレンダリング
-         */
-        function renderPDFCards(data) {
-            const grid = document.getElementById('pdfGrid');
+        // PDFデータをGASから取得
+        function loadPdfData() {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('pdf-container');
             
-            // 既存のカードをクリア
-            grid.innerHTML = '';
+            loading.style.display = 'block';
+            container.innerHTML = '';
 
-            // データからカードを生成
-            data.forEach(item => {
-                const card = createPDFCard(item);
-                grid.appendChild(card);
-            });
+            // JSONPを使用してGASからデータを取得
+            const script = document.createElement('script');
+            script.src = GAS_API_URL + '?callback=handlePdfData&action=getData';
+            document.head.appendChild(script);
 
-            // グリッドを表示
-            grid.style.display = 'grid';
+            // スクリプトタグを削除（メモリリーク防止）
+            script.onload = () => document.head.removeChild(script);
         }
 
-        /**
-         * PDFカード要素を作成
-         */
-        function createPDFCard(item) {
-            const card = document.createElement('div');
-            card.className = 'pdf-card';
-            card.setAttribute('data-id', item.id);
-
-            // 日付の表示処理
-            const dateText = item.date || '日付不明';
+        // JSONPコールバック関数
+        function handlePdfData(data) {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('pdf-container');
             
-            // 内容のトリミング
-            const content = item.content || '';
-            const truncatedContent = content.length > 100 ? content.substring(0, 100) + '...' : content;
+            loading.style.display = 'none';
+            
+            if (!data || !Array.isArray(data)) {
+                container.innerHTML = '<p>データの読み込みに失敗しました。</p>';
+                return;
+            }
 
-            card.innerHTML = `
-                <div class="pdf-thumbnail">
-                    <div class="date-badge">${dateText}</div>
-                </div>
-                <div class="pdf-content">
-                    <h3 class="pdf-title">${item.title || 'タイトルなし'}</h3>
-                    <p class="pdf-description">${truncatedContent}</p>
-                    <div class="pdf-actions">
-                        <a href="detail.html?id=${item.id}" class="btn btn-primary">📖 詳細を見る</a>
+            pdfData = data;
+            displayPdfCards(data);
+        }
+
+        // PDFカードを表示
+        function displayPdfCards(data) {
+            const container = document.getElementById('pdf-container');
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p>現在、表示するデータがありません。</p>';
+                return;
+            }
+
+            container.innerHTML = data.map((item, index) => `
+                <div class="pdf-card">
+                    <div class="pdf-thumbnail">
+                        ${item.thumbnailUrl ? 
+                            `<img src="${item.thumbnailUrl}" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="pdf-icon" style="display: none;">📄</div>` :
+                            `<div class="pdf-icon">📄</div>`
+                        }
                     </div>
+                    <a href="#" class="pdf-title" onclick="showDetail(${index})">${item.title}</a>
+                    <div class="pdf-date">${formatDate(item.date)}</div>
+                    <div class="pdf-content">${item.content}</div>
+                    <a href="${item.pdfUrl}" target="_blank" class="pdf-link">PDFを開く</a>
+                </div>
+            `).join('');
+        }
+
+        // 詳細ページを表示
+        function showDetail(index) {
+            const item = pdfData[index];
+            if (!item) return;
+
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div class="detail-pdf">
+                    <div class="detail-thumbnail">
+                        ${item.thumbnailUrl ? 
+                            `<img src="${item.thumbnailUrl}" alt="${item.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="pdf-icon" style="display: none;">📄</div>` :
+                            `<div class="pdf-icon">📄</div>`
+                        }
+                    </div>
+                    <h1 class="detail-title">${item.title}</h1>
+                    <div class="detail-date">${formatDate(item.date)}</div>
+                    <div class="detail-description">${item.content}</div>
+                    <a href="${item.pdfUrl}" target="_blank" class="pdf-link">PDFを開く</a>
                 </div>
             `;
 
-            // カードクリックイベント
-            card.addEventListener('click', function(e) {
-                // ボタンクリック以外の場合は詳細ページへ遷移
-                if (!e.target.closest('.btn')) {
-                    window.location.href = `detail.html?id=${item.id}`;
-                }
-            });
-
-            return card;
+            showPage('detail');
         }
 
-        /**
-         * ローディング表示
-         */
-        function showLoading() {
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('noData').style.display = 'none';
-            document.getElementById('pdfGrid').style.display = 'none';
+        // 日付をフォーマット
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
+            return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
         }
 
-        /**
-         * ローディング非表示
-         */
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
-        }
+        // エラーハンドリング
+        window.onerror = function(msg, url, line) {
+            console.error('エラーが発生しました:', msg, 'URL:', url, 'Line:', line);
+            const loading = document.getElementById('loading');
+            if (loading && loading.style.display !== 'none') {
+                loading.innerHTML = '<p>データの読み込み中にエラーが発生しました。</p>';
+            }
+        };
 
-        /**
-         * エラー表示
-         */
-        function showError(message) {
-            document.getElementById('errorMessage').textContent = message || 'データの読み込みに失敗しました';
-            document.getElementById('error').style.display = 'block';
-            document.getElementById('noData').style.display = 'none';
-            document.getElementById('pdfGrid').style.display = 'none';
-        }
-
-        /**
-         * データなし表示
-         */
-        function showNoData() {
-            document.getElementById('noData').style.display = 'block';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('pdfGrid').style.display = 'none';
-        }
-
-        /**
-         * 詳細ページへの遷移（カード全体クリック用）
-         */
-        function goToDetail(id) {
-            window.location.href = `detail.html?id=${id}`;
-        }
-
-        /**
-         * ページリフレッシュ
-         */
-        function refreshPage() {
-            window.location.reload();
-        }
-
-        // デバッグ用: コンソールでデータ確認
-        window.debugLoadData = loadPDFData;
+        // 初期読み込み
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPdfData();
+        });
     </script>
 </body>
 </html>
