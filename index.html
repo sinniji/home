@@ -85,7 +85,7 @@
         /* PDFグリッド */
         .pdf-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -97,8 +97,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             border: 1px solid rgba(102, 126, 234, 0.1);
-            max-width: 320px;
-            margin: 0 auto;
         }
 
         .pdf-card:hover {
@@ -108,7 +106,7 @@
 
         .pdf-thumbnail {
             width: 100%;
-            height: 180px;
+            height: 200px;
             background: #f8f9fa;
             border-radius: 10px;
             display: flex;
@@ -128,20 +126,19 @@
         }
 
         .pdf-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: #dc3545;
             opacity: 0.7;
         }
 
         .pdf-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #333;
             margin-bottom: 0.5rem;
             text-decoration: none;
             display: block;
             transition: color 0.3s ease;
-            line-height: 1.3;
         }
 
         .pdf-title:hover {
@@ -150,7 +147,7 @@
 
         .pdf-date {
             color: #6c757d;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
 
@@ -248,92 +245,27 @@
 
         /* レスポンシブデザイン */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .main-content {
-                padding: 1.5rem;
-            }
-
             .nav-links {
-                gap: 0.8rem;
-                font-size: 0.85rem;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .nav-links a {
-                padding: 0.4rem 0.8rem;
+                gap: 1rem;
+                font-size: 0.9rem;
             }
 
             .pdf-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                grid-template-columns: 1fr;
                 gap: 1rem;
-                max-width: 100%;
-            }
-
-            .pdf-card {
-                padding: 1rem;
-                max-width: 160px;
-                width: 100%;
-            }
-
-            .pdf-thumbnail {
-                height: 120px;
-                margin-bottom: 0.8rem;
-            }
-
-            .pdf-icon {
-                font-size: 2rem;
-            }
-
-            .pdf-title {
-                font-size: 0.95rem;
-                line-height: 1.2;
-                margin-bottom: 0.4rem;
-            }
-
-            .pdf-date {
-                font-size: 0.75rem;
             }
 
             .page-title {
-                font-size: 1.4rem;
-                margin-bottom: 1.5rem;
+                font-size: 1.5rem;
             }
 
             .detail-thumbnail {
-                width: 200px;
-                height: 260px;
+                width: 250px;
+                height: 330px;
             }
 
             .detail-title {
-                font-size: 1.3rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .pdf-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-            }
-
-            .pdf-card {
-                max-width: 140px;
-                padding: 0.8rem;
-            }
-
-            .pdf-thumbnail {
-                height: 100px;
-            }
-
-            .pdf-title {
-                font-size: 0.85rem;
-            }
-
-            .pdf-date {
-                font-size: 0.7rem;
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -396,12 +328,9 @@
     </div>
 
     <script>
-        // 設定とキャッシュ
+        // 設定
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzdau9dPTm63euUx2V_MTwjJSx52038GX-RUIgR9QkDoeDK5BcYTYS4iYQ6XUshyjB0/exec';
         let pdfData = [];
-        let dataCache = null;
-        let lastCacheTime = 0;
-        const CACHE_DURATION = 5 * 60 * 1000; // 5分間キャッシュ
 
         // ページ切り替え機能
         function showPage(pageId) {
@@ -430,20 +359,10 @@
             }
         }
 
-        // PDFデータをGASから取得（キャッシュ対応）
+        // PDFデータをGASから取得
         function loadPdfData() {
             const loading = document.getElementById('loading');
             const container = document.getElementById('pdf-container');
-            
-            // キャッシュチェック
-            const currentTime = new Date().getTime();
-            if (dataCache && (currentTime - lastCacheTime) < CACHE_DURATION) {
-                console.log('キャッシュからデータを取得');
-                loading.style.display = 'none';
-                pdfData = dataCache;
-                displayPdfCards(dataCache);
-                return;
-            }
             
             loading.style.display = 'block';
             container.innerHTML = '';
@@ -457,9 +376,7 @@
             script.onerror = function() {
                 loading.style.display = 'none';
                 container.innerHTML = '<p>データの読み込みに失敗しました。しばらくしてから再度お試しください。</p>';
-                if (document.head.contains(script)) {
-                    document.head.removeChild(script);
-                }
+                document.head.removeChild(script);
             };
 
             // 成功時の処理
@@ -475,7 +392,7 @@
             document.head.appendChild(script);
         }
 
-        // JSONPコールバック関数（キャッシュ対応）
+        // JSONPコールバック関数
         function handlePdfData(data) {
             const loading = document.getElementById('loading');
             const container = document.getElementById('pdf-container');
@@ -487,13 +404,8 @@
                 return;
             }
 
-            // データをキャッシュ
-            dataCache = data;
-            lastCacheTime = new Date().getTime();
-            
             pdfData = data;
             displayPdfCards(data);
-            console.log('データをキャッシュに保存しました');
         }
 
         // PDFカードを表示（内容とPDFリンクを削除）
