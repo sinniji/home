@@ -208,24 +208,6 @@
             background: #5a67d8;
         }
         
-        .api-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .api-url {
-            background: #e9ecef;
-            padding: 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-            word-break: break-all;
-            margin: 10px 0;
-        }
-        
         @media (max-width: 768px) {
             .pdf-grid {
                 grid-template-columns: 1fr;
@@ -292,13 +274,6 @@
     <div class="container">
         <h1 class="section-title">📚 Document Portal (JSONP版)</h1>
         
-        <div class="api-info">
-            <h3>🔧 Google Apps Script API設定</h3>
-            <p><strong>現在のAPI URL:</strong></p>
-            <div class="api-url" id="current-api-url">未設定</div>
-            <p><small>※ 実際のGoogle Apps ScriptのWeb APIのURLに変更してください</small></p>
-        </div>
-        
         <button class="reload-btn" onclick="loadDocuments()">📥 データを再読み込み</button>
         
         <div id="status" class="loading">Google Apps Scriptからデータを読み込み中...</div>
@@ -311,7 +286,7 @@
         
         // 現在のAPI URLを表示
         document.getElementById('current-api-url').textContent = GAS_API_URL;
-         
+        
         let documentsData = [];
         
         // JSONP用のコールバック関数
