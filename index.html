@@ -295,7 +295,7 @@
         <div class="api-info">
             <h3>🔧 Google Apps Script API設定</h3>
             <p><strong>現在のAPI URL:</strong></p>
-            <div class="https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec" id="https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec">未設定</div>
+            <div class="api-url" id="current-api-url">未設定</div>
             <p><small>※ 実際のGoogle Apps ScriptのWeb APIのURLに変更してください</small></p>
         </div>
         
@@ -310,8 +310,8 @@
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec';
         
         // 現在のAPI URLを表示
-        document.getElementById('current-api-url').textContent = 'https://script.google.com/macros/s/AKfycbzbplkRrk2btXmPX_SZcvbHBhMZ3zWn6ljfIjh2T5P4OLtjL9aY20klnz1CPKQ7Ajyh/exec';
-        
+        document.getElementById('current-api-url').textContent = GAS_API_URL;
+         
         let documentsData = [];
         
         // JSONP用のコールバック関数
