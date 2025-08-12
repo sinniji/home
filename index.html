@@ -402,21 +402,9 @@
         // 実際のGASデータ取得関数（サンプル）
         async function loadPDFData() {
             try {
-                // const response = await fetch(GAS_API_URL);
-                // const data = await response.json();
-                
-                // サンプルデータ
-                const data = [
-                    {
-                        date: '2025/03/15',
-                        title: '春季講座のご案内',
-                        content: '2025年春季の講座スケジュールと詳細内容についてまとめた資料です。',
-                        filename: 'spring_course_2025.pdf',
-                        pdfUrl: 'https://example.com/spring_course_2025.pdf'
-                    }
-                    // ... 他のデータ
-                ];
-                
+                 const response = await fetch(`${GAS_API_URL}?action=getAll`);
+                 const data = await response.json();
+                                
                 renderPDFCards(data);
             } catch (error) {
                 console.error('データの取得に失敗しました:', error);
