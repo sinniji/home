@@ -247,7 +247,7 @@
         <main class="main-content">
             <!-- ホームページ -->
             <div id="home-page" class="page">
-                <h1 class="page-title">最新のお知らせ２</h1>
+                <h1 class="page-title">最新のお知らせ</h1>
                 <div id="loading" class="loading">
                     <div class="spinner"></div>
                     <p>データを読み込んでいます...</p>
@@ -344,7 +344,7 @@
                         }
                     </div>
                     <a href="#" class="pdf-title" onclick="showDetail(${index})">${convertLineBreaks(item.title)}</a>
-                    <div class="pdf-date">${formatDate(item.date)}</div>
+                    <div class="pdf-date">${item.period || ''}</div>
                 </div>
             `).join('');
         }
@@ -365,7 +365,7 @@
                         }
                     </div>
                     <h1 class="detail-title">${convertLineBreaks(item.title)}</h1>
-                    <div class="detail-date">${formatDate(item.date)}</div>
+                    <div class="detail-date">${item.period || ''}</div>
                     <div class="detail-description">${convertLineBreaks(item.content)}</div>
                     <a href="${item.pdfUrl}" target="_blank" class="pdf-link">PDFを開く</a>
                 </div>
