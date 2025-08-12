@@ -3,455 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Portal - JSONP版</title>
+    <title>ホームページ - Home画面</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f5f5f5;
-        }
-        
-        /* ナビゲーションメニュー */
-        .navigation {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            overflow-x: auto;
-        }
-        
-        .nav-item {
-            flex-shrink: 0;
-        }
-        
-        .nav-link {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-            white-space: nowrap;
-        }
-        
-        .nav-link:hover {
-            color: #667eea;
-            border-bottom-color: #667eea;
-            background-color: #f8f9ff;
-        }
-        
-        .nav-link.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
-            background-color: #f0f4ff;
-        }
-        
-        .nav-icon {
-            margin-right: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
-        
-        .loading {
+
+        /* ナビゲーション */
+        nav {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+
+        /* ヘッダー */
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400"><rect fill="%23e74c3c" width="1000" height="400"/><text x="500" y="200" text-anchor="middle" fill="white" font-size="40">Welcome to Our Site</text></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
             text-align: center;
-            padding: 60px;
-            font-size: 1.2em;
-            color: #666;
+            padding: 4rem 2rem;
         }
-        
-        .error {
-            background: #ffe6e6;
-            color: #d00;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease;
         }
-        
-        .success {
-            background: #e8f5e8;
-            color: #4a7c59;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.3s both;
         }
-        
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* メインコンテンツ */
+        main {
+            padding: 2rem;
+        }
+
         .section-title {
-            font-size: 2em;
-            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
             text-align: center;
-            color: #444;
+            position: relative;
         }
-        
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+            border-radius: 2px;
+        }
+
+        /* PDFカードグリッド */
         .pdf-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
-        
+
         .pdf-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
-        
+
+        .pdf-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #3498db, #e74c3c);
+        }
+
         .pdf-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-        
+
         .pdf-thumbnail {
             width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 200px;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 3em;
             position: relative;
-        }
-        
-        .pdf-thumbnail::after {
-            content: 'PDF';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.3em;
-            font-weight: bold;
-        }
-        
-        .pdf-info {
-            padding: 20px;
-        }
-        
-        .pdf-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        
-        .pdf-date {
-            color: #666;
-            font-size: 0.9em;
-            margin-bottom: 12px;
-        }
-        
-        .pdf-content {
-            color: #777;
-            font-size: 0.95em;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        
-        .pdf-filename {
-            color: #999;
-            font-size: 0.8em;
-            margin-top: 10px;
-            font-style: italic;
+
+        .pdf-thumbnail::before {
+            content: '📄';
+            font-size: 4rem;
+            opacity: 0.3;
         }
-        
-        .reload-btn {
-            background: #667eea;
+
+        .pdf-thumbnail .date-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(52, 152, 219, 0.9);
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 1em;
-            cursor: pointer;
-            margin: 20px 0;
-            transition: background 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
-        
-        .reload-btn:hover {
-            background: #5a67d8;
+
+        .pdf-content {
+            padding: 1.5rem;
         }
-        
-        .api-info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+
+        .pdf-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            line-height: 1.4;
         }
-        
-        .api-url {
-            background: #e9ecef;
-            padding: 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-            word-break: break-all;
-            margin: 10px 0;
+
+        .pdf-description {
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 1rem;
         }
-        
+
+        .pdf-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #c0392b, #e74c3c);
+            transform: translateY(-2px);
+        }
+
+        /* 読み込み状態 */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ecf0f1;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* フッター */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* レスポンシブ */
         @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
             .pdf-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            .nav-container {
-                padding: 0 15px;
-            }
-            
-            .nav-link {
-                padding: 12px 16px;
-                font-size: 0.9em;
-            }
-            
-            .nav-menu {
-                justify-content: flex-start;
+
+            .pdf-actions {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <!-- ナビゲーションメニュー -->
-    <nav class="navigation">
-        <div class="nav-container">
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link active">
-                        <span class="nav-icon">🏠</span>Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="venues.html" class="nav-link">
-                        <span class="nav-icon">📍</span>会場一覧
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="detail.html" class="nav-link">
-                        <span class="nav-icon">📄</span>詳細ページ
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="members.html" class="nav-link">
-                        <span class="nav-icon">👥</span>会員専用
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="courses.html" class="nav-link">
-                        <span class="nav-icon">📚</span>講座専用
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="contact.html" class="nav-link">
-                        <span class="nav-icon">📧</span>問合せ
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    
     <div class="container">
-        <h1 class="section-title">📚 Document Portal (JSONP版)</h1>
-        
-        <div class="api-info">
-            <h3>🔧 Google Apps Script API設定</h3>
-            <p><strong>現在のAPI URL:</strong></p>
-            <div class="api-url" id="current-api-url">未設定</div>
-            <p><small>※ 実際のGoogle Apps ScriptのWeb APIのURLに変更してください</small></p>
-        </div>
-        
-        <button class="reload-btn" onclick="loadDocuments()">📥 データを再読み込み</button>
-        
-        <div id="status" class="loading">Google Apps Scriptからデータを読み込み中...</div>
-        <div id="pdf-container"></div>
+        <!-- ナビゲーション -->
+        <nav>
+            <div class="nav-container">
+                <div class="logo">サンプルサイト</div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active">HOME</a></li>
+                    <li><a href="#">会場一覧</a></li>
+                    <li><a href="#">詳細ページ</a></li>
+                    <li><a href="#">会員専用</a></li>
+                    <li><a href="#">講座専用</a></li>
+                    <li><a href="#">問合せ</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- メインコンテンツ -->
+        <main>
+            <h2 class="section-title">最新のPDF資料</h2>
+            
+            <!-- 読み込み中表示 -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>データを読み込んでいます...</p>
+            </div>
+
+            <!-- PDFカードコンテナ -->
+            <div class="pdf-grid" id="pdfGrid" style="display: none;">
+                <!-- サンプルデータ -->
+                <div class="pdf-card">
+                    <div class="pdf-thumbnail">
+                        <div class="date-badge">2025/03/15</div>
+                    </div>
+                    <div class="pdf-content">
+                        <h3 class="pdf-title">春季講座のご案内</h3>
+                        <p class="pdf-description">2025年春季の講座スケジュールと詳細内容についてまとめた資料です。新しいコースも多数追加されています。</p>
+                        <div class="pdf-actions">
+                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pdf-card">
+                    <div class="pdf-thumbnail">
+                        <div class="date-badge">2025/03/10</div>
+                    </div>
+                    <div class="pdf-content">
+                        <h3 class="pdf-title">会員向けイベント情報</h3>
+                        <p class="pdf-description">会員様限定のイベント情報をお知らせします。特別割引や優先予約などの特典があります。</p>
+                        <div class="pdf-actions">
+                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pdf-card">
+                    <div class="pdf-thumbnail">
+                        <div class="date-badge">2025/03/05</div>
+                    </div>
+                    <div class="pdf-content">
+                        <h3 class="pdf-title">施設利用ガイドライン</h3>
+                        <p class="pdf-description">各会場の利用方法と注意事項をまとめたガイドラインです。安全で快適にご利用いただくための重要な情報が含まれています。</p>
+                        <div class="pdf-actions">
+                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- フッター -->
+        <footer>
+            <p>&copy; 2025 サンプルサイト. All rights reserved. | Powered by Google Apps Script & GitHub Pages</p>
+        </footer>
     </div>
 
     <script>
-        // Google Apps ScriptのWeb API URL（実際のURLに変更してください）
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzsrmQoFY7HdCdZtBcuwT3l-a_KZIuA370EA-OA9TImQqZAXdoUcqaj_y4_C7IgDVPF/exec';
+        // 実際の実装では、Google Apps Scriptからデータを取得
+        // const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzsrmQoFY7HdCdZtBcuwT3l-a_KZIuA370EA-OA9TImQqZAXdoUcqaj_y4_C7IgDVPF/exec';
         
-        // 現在のAPI URLを表示
-        document.getElementById('current-api-url').textContent = GAS_API_URL;
-        
-        let documentsData = [];
-        
-        // JSONP用のコールバック関数
-        function handleDocumentsData(data) {
-            console.log('受信したデータ:', data);
-            documentsData = data;
-            renderDocuments(data);
-            document.getElementById('status').innerHTML = 
-                `<div class="success">✅ ${data.length}件のドキュメントを読み込みました</div>`;
-        }
-        
-        // エラーハンドリング用のタイムアウト
-        function handleLoadError() {
-            document.getElementById('status').innerHTML = `
-                <div class="error">
-                    ❌ データの読み込みに失敗しました<br>
-                    <small>
-                        • Google Apps ScriptのURLが正しく設定されているか確認してください<br>
-                        • ScriptがWebアプリとして公開されているか確認してください<br>
-                        • アクセス権限が「誰でも」に設定されているか確認してください
-                    </small>
-                </div>`;
-        }
-        
-        // JSONPでデータを読み込む
-        function loadDocuments() {
-            document.getElementById('status').innerHTML = 
-                '<div class="loading">🔄 Google Apps Scriptからデータを読み込み中...</div>';
-            document.getElementById('pdf-container').innerHTML = '';
-            
-            // 既存のscriptタグを削除
-            const existingScript = document.getElementById('jsonp-script');
-            if (existingScript) {
-                existingScript.remove();
-            }
-            
-            // エラー用タイムアウトを設定
-            const timeoutId = setTimeout(handleLoadError, 10000); // 10秒でタイムアウト
-            
-            // JSONPスクリプトタグを作成
-            const script = document.createElement('script');
-            script.id = 'jsonp-script';
-            script.src = `${GAS_API_URL}?callback=handleDocumentsData&t=${Date.now()}`;
-            
-            // スクリプトが正常にロードされた場合はタイムアウトをクリア
-            script.onload = () => {
-                clearTimeout(timeoutId);
-            };
-            
-            script.onerror = () => {
-                clearTimeout(timeoutId);
-                handleLoadError();
-            };
-            
-            document.head.appendChild(script);
-        }
-        
-        // ドキュメント一覧を描画
-        function renderDocuments(documents) {
-            const container = document.getElementById('pdf-container');
-            
-            if (!documents || documents.length === 0) {
-                container.innerHTML = '<div class="error">📭 表示できるドキュメントがありません</div>';
-                return;
-            }
-            
-            const gridHtml = `
-                <div class="pdf-grid">
-                    ${documents.map(doc => `
-                        <div class="pdf-card" onclick="openDetail('${doc.id}', '${encodeURIComponent(doc.title)}')">
-                            <div class="pdf-thumbnail">📄</div>
-                            <div class="pdf-info">
-                                <div class="pdf-title">${escapeHtml(doc.title)}</div>
-                                <div class="pdf-date">${formatDate(doc.date)}</div>
-                                <div class="pdf-content">${escapeHtml(doc.content)}</div>
-                                <div class="pdf-filename">📎 ${escapeHtml(doc.pdfFileName)}</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            container.innerHTML = gridHtml;
-        }
-        
-        // 詳細ページを開く
-        function openDetail(id, title) {
-            // 実際の実装では詳細ページに遷移
-            const doc = documentsData.find(d => d.id == id);
-            if (doc) {
-                // 詳細ページのURL（例：detail.html?id=123）
-                window.open(`detail.html?id=${id}`, '_blank');
-            } else {
-                alert(`詳細ページを開きます: ${decodeURIComponent(title)}`);
-            }
-        }
-        
-        // HTMLエスケープ
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // 日付フォーマット
-        function formatDate(dateValue) {
-            if (!dateValue) return '日付不明';
-            
-            try {
-                const date = new Date(dateValue);
-                return date.toLocaleDateString('ja-JP', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            } catch (e) {
-                return dateValue.toString();
-            }
-        }
-        
-        // ナビゲーションのアクティブ状態を更新
-        function setActiveNavigation(pageName) {
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(pageName) || 
-                    (pageName === 'index' && link.getAttribute('href').includes('index.html'))) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        // ページ読み込み時に実行
+        // サンプル実装
         document.addEventListener('DOMContentLoaded', function() {
-            // 現在のページに基づいてナビゲーションをアクティブ化
-            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-            setActiveNavigation(currentPage.replace('.html', ''));
-            
-            loadDocuments();
+            // 3秒後にローディングを非表示にしてコンテンツを表示
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('pdfGrid').style.display = 'grid';
+            }, 2000);
+        });
+
+        // 実際のGASデータ取得関数（サンプル）
+        async function loadPDFData() {
+            try {
+                // const response = await fetch(GAS_API_URL);
+                // const data = await response.json();
+                
+                // サンプルデータ
+                const data = [
+                    {
+                        date: '2025/03/15',
+                        title: '春季講座のご案内',
+                        content: '2025年春季の講座スケジュールと詳細内容についてまとめた資料です。',
+                        filename: 'spring_course_2025.pdf',
+                        pdfUrl: 'https://example.com/spring_course_2025.pdf'
+                    }
+                    // ... 他のデータ
+                ];
+                
+                renderPDFCards(data);
+            } catch (error) {
+                console.error('データの取得に失敗しました:', error);
+            }
+        }
+
+        function renderPDFCards(data) {
+            const grid = document.getElementById('pdfGrid');
+            // PDFカードのレンダリングロジックを実装
+        }
+
+        // PDFカードのクリックイベント
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.pdf-card')) {
+                const card = e.target.closest('.pdf-card');
+                // 詳細ページへの遷移処理
+                console.log('PDFカードがクリックされました');
+            }
         });
     </script>
 </body>
