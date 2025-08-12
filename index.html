@@ -282,10 +282,11 @@
 
     <script>
         // Google Apps ScriptのWeb API URL（実際のURLに変更してください）
-        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzsrmQoFY7HdCdZtBcuwT3l-a_KZIuA370EA-OA9TImQqZAXdoUcqaj_y4_C7IgDVPF/exec';
+        // 例: 'https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec'
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbksuehngmsnjtXmPlsoekifjfghMZ3zWn6ljfIjh2TuehajskfguY20klnz1CPKQ7Ajyh/exec';
         
         // 現在のAPI URLを表示
-        //document.getElementById('current-api-url').textContent = GAS_API_URL;
+        document.getElementById('current-api-url').textContent = GAS_API_URL;
         
         let documentsData = [];
         
@@ -304,15 +305,19 @@
                 <div class="error">
                     ❌ データの読み込みに失敗しました<br>
                     <small>
-                        • Google Apps ScriptのURLが正しく設定されているか確認してください<br>
-                        • ScriptがWebアプリとして公開されているか確認してください<br>
-                        • アクセス権限が「誰でも」に設定されているか確認してください
+                        <strong>対処方法：</strong><br>
+                        1. Google Apps ScriptのURLをブラウザで直接開いてデータが返るか確認<br>
+                        2. Scriptの「アクセス権限」が「すべてのユーザー」になっているか確認<br>
+                        3. Google Sitesではセキュリティが厳しいため、しばらく待ってから再試行<br>
+                        4. ブラウザの開発者ツール（F12）でエラーメッセージを確認
                     </small>
                 </div>`;
         }
         
         // JSONPでデータを読み込む
         function loadDocuments() {
+            showDebugInfo(); // デバッグ情報を出力
+            
             document.getElementById('status').innerHTML = 
                 '<div class="loading">🔄 Google Apps Scriptからデータを読み込み中...</div>';
             document.getElementById('pdf-container').innerHTML = '';
@@ -323,25 +328,92 @@
                 existingScript.remove();
             }
             
-            // エラー用タイムアウトを設定
-            const timeoutId = setTimeout(handleLoadError, 10000); // 10秒でタイムアウト
+            // エラー用タイムアウトを設定（Google Sitesでは長めに設定）
+            const timeoutId = setTimeout(() => {
+                console.log('タイムアウト発生');
+                handleLoadError();
+            }, 20000); // 20秒でタイムアウト
             
             // JSONPスクリプトタグを作成
             const script = document.createElement('script');
             script.id = 'jsonp-script';
-            script.src = `${GAS_API_URL}?callback=handleDocumentsData&t=${Date.now()}`;
             
-            // スクリプトが正常にロードされた場合はタイムアウトをクリア
-            script.onload = () => {
+            // Google Sitesでのセキュリティを考慮したURL構築
+            const timestamp = Date.now();
+            const callbackName = `jsonpCallback_${timestamp}`;
+            
+            console.log('JSONP呼び出し開始:', {
+                url: GAS_API_URL,
+                callback: callbackName,
+                timestamp: timestamp
+            });
+            
+            // グローバルコールバック関数を動的に作成
+            window[callbackName] = function(data) {
+                console.log('JSONP成功:', data);
                 clearTimeout(timeoutId);
+                documentsData = data;
+                renderDocuments(data);
+                document.getElementById('status').innerHTML = 
+                    `<div class="success">✅ ${data.length}件のドキュメントを読み込みました</div>`;
+                
+                // 使用後にクリーンアップ
+                delete window[callbackName];
+                if (script && script.parentNode) {
+                    script.parentNode.removeChild(script);
+                }
             };
             
-            script.onerror = () => {
+            // Google Sitesで動作しない場合の代替手段を用意
+            script.onerror = function(error) {
+                console.error('JSONP スクリプトエラー:', error);
                 clearTimeout(timeoutId);
+                delete window[callbackName];
+                
+                // フォールバック：通常のfetchを試す
+                tryFetchFallback();
+            };
+            
+            script.onload = function() {
+                console.log('JSONP スクリプト読み込み完了');
+            };
+            
+            const fullUrl = `${GAS_API_URL}?callback=${callbackName}&t=${timestamp}&_=${Math.random()}`;
+            script.src = fullUrl;
+            
+            console.log('スクリプトURL:', fullUrl);
+            
+            // Google Sitesでは document.head に追加
+            const head = document.head || document.getElementsByTagName('head')[0];
+            if (head) {
+                head.appendChild(script);
+                console.log('スクリプトを head に追加');
+            } else {
+                console.error('head要素が見つからない');
                 handleLoadError();
-            };
-            
-            document.head.appendChild(script);
+            }
+        }
+        
+        // フォールバック：通常のfetch（参考用 - Google Sitesでは動作しない可能性）
+        function tryFetchFallback() {
+            console.log('フォールバック試行中...');
+            document.getElementById('status').innerHTML = 
+                '<div class="loading">🔄 フォールバック方法で再試行中...</div>';
+                
+            // 注意：これはCORSエラーになる可能性が高い
+            fetch(GAS_API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('フォールバック成功:', data);
+                    documentsData = data;
+                    renderDocuments(data);
+                    document.getElementById('status').innerHTML = 
+                        `<div class="success">✅ ${data.length}件のドキュメントを読み込みました（フォールバック）</div>`;
+                })
+                .catch(error => {
+                    console.error('フォールバックも失敗:', error);
+                    handleLoadError();
+                });
         }
         
         // ドキュメント一覧を描画
