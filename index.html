@@ -74,40 +74,6 @@
             font-weight: bold;
         }
 
-        /* ヘッダー */
-        .header {
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400"><rect fill="%23e74c3c" width="1000" height="400"/><text x="500" y="200" text-anchor="middle" fill="white" font-size="40">Welcome to Our Site</text></svg>');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            animation: fadeInUp 1s ease;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease 0.3s both;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         /* メインコンテンツ */
         main {
             padding: 2rem;
@@ -274,6 +240,31 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* エラー表示 */
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #e74c3c;
+        }
+
+        .error-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 空のデータ表示 */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #7f8c8d;
+        }
+
+        .no-data-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
         /* フッター */
         footer {
             background: #2c3e50;
@@ -293,10 +284,6 @@
             .nav-container {
                 flex-direction: column;
                 gap: 1rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
             }
 
             .pdf-grid {
@@ -336,47 +323,22 @@
                 <p>データを読み込んでいます...</p>
             </div>
 
+            <!-- エラー表示 -->
+            <div class="error" id="error" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <p id="errorMessage">データの読み込みに失敗しました</p>
+                <button onclick="loadPDFData()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">再試行</button>
+            </div>
+
+            <!-- データなし表示 -->
+            <div class="no-data" id="noData" style="display: none;">
+                <div class="no-data-icon">📄</div>
+                <p>表示するデータがありません</p>
+            </div>
+
             <!-- PDFカードコンテナ -->
             <div class="pdf-grid" id="pdfGrid" style="display: none;">
-                <!-- サンプルデータ -->
-                <div class="pdf-card">
-                    <div class="pdf-thumbnail">
-                        <div class="date-badge">2025/03/15</div>
-                    </div>
-                    <div class="pdf-content">
-                        <h3 class="pdf-title">春季講座のご案内</h3>
-                        <p class="pdf-description">2025年春季の講座スケジュールと詳細内容についてまとめた資料です。新しいコースも多数追加されています。</p>
-                        <div class="pdf-actions">
-                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pdf-card">
-                    <div class="pdf-thumbnail">
-                        <div class="date-badge">2025/03/10</div>
-                    </div>
-                    <div class="pdf-content">
-                        <h3 class="pdf-title">会員向けイベント情報</h3>
-                        <p class="pdf-description">会員様限定のイベント情報をお知らせします。特別割引や優先予約などの特典があります。</p>
-                        <div class="pdf-actions">
-                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pdf-card">
-                    <div class="pdf-thumbnail">
-                        <div class="date-badge">2025/03/05</div>
-                    </div>
-                    <div class="pdf-content">
-                        <h3 class="pdf-title">施設利用ガイドライン</h3>
-                        <p class="pdf-description">各会場の利用方法と注意事項をまとめたガイドラインです。安全で快適にご利用いただくための重要な情報が含まれています。</p>
-                        <div class="pdf-actions">
-                            <a href="#" class="btn btn-primary">📖 詳細を見る</a>
-                        </div>
-                    </div>
-                </div>
+                <!-- ここにスプレッドシートのデータが動的に追加されます -->
             </div>
         </main>
 
@@ -387,43 +349,173 @@
     </div>
 
     <script>
-        // 実際の実装では、Google Apps Scriptからデータを取得
-        // const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyq7Fo_ct7Np8nJqveBnI2dUIoS7UcHv27WJ_Gns1yAVdloax-Doxq4qPt5Qakt3ftx/exec';
-        
-        // サンプル実装
+        // Google Apps Script WebアプリのURL
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyq7Fo_ct7Np8nJqveBnI2dUIoS7UcHv27WJ_Gns1yAVdloax-Doxq4qPt5Qakt3ftx/exec';
+
+        // ページ読み込み時にデータを取得
         document.addEventListener('DOMContentLoaded', function() {
-            // 3秒後にローディングを非表示にしてコンテンツを表示
-            setTimeout(() => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('pdfGrid').style.display = 'grid';
-            }, 2000);
+            loadPDFData();
         });
 
-        // 実際のGASデータ取得関数（サンプル）
+        /**
+         * Google Apps Scriptからデータを取得してPDFカードを表示
+         */
         async function loadPDFData() {
             try {
-                 const response = await fetch(`${GAS_API_URL}?action=getAll`);
-                 const data = await response.json();
-                                
-                renderPDFCards(data);
+                showLoading();
+                
+                console.log('データを取得中...', GAS_API_URL);
+                
+                // GASからデータを取得
+                const response = await fetch(`${GAS_API_URL}?action=getAll&t=${Date.now()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('取得したデータ:', data);
+
+                // エラーレスポンスの場合
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // データが配列でない場合
+                if (!Array.isArray(data)) {
+                    throw new Error('データ形式が不正です');
+                }
+
+                hideLoading();
+
+                if (data.length === 0) {
+                    showNoData();
+                } else {
+                    renderPDFCards(data);
+                }
+
             } catch (error) {
-                console.error('データの取得に失敗しました:', error);
+                console.error('データ取得エラー:', error);
+                hideLoading();
+                showError(error.message);
             }
         }
 
+        /**
+         * PDFカードをレンダリング
+         */
         function renderPDFCards(data) {
             const grid = document.getElementById('pdfGrid');
-            // PDFカードのレンダリングロジックを実装
+            
+            // 既存のカードをクリア
+            grid.innerHTML = '';
+
+            // データからカードを生成
+            data.forEach(item => {
+                const card = createPDFCard(item);
+                grid.appendChild(card);
+            });
+
+            // グリッドを表示
+            grid.style.display = 'grid';
         }
 
-        // PDFカードのクリックイベント
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.pdf-card')) {
-                const card = e.target.closest('.pdf-card');
-                // 詳細ページへの遷移処理
-                console.log('PDFカードがクリックされました');
-            }
-        });
+        /**
+         * PDFカード要素を作成
+         */
+        function createPDFCard(item) {
+            const card = document.createElement('div');
+            card.className = 'pdf-card';
+            card.setAttribute('data-id', item.id);
+
+            // 日付の表示処理
+            const dateText = item.date || '日付不明';
+            
+            // 内容のトリミング
+            const content = item.content || '';
+            const truncatedContent = content.length > 100 ? content.substring(0, 100) + '...' : content;
+
+            card.innerHTML = `
+                <div class="pdf-thumbnail">
+                    <div class="date-badge">${dateText}</div>
+                </div>
+                <div class="pdf-content">
+                    <h3 class="pdf-title">${item.title || 'タイトルなし'}</h3>
+                    <p class="pdf-description">${truncatedContent}</p>
+                    <div class="pdf-actions">
+                        <a href="detail.html?id=${item.id}" class="btn btn-primary">📖 詳細を見る</a>
+                    </div>
+                </div>
+            `;
+
+            // カードクリックイベント
+            card.addEventListener('click', function(e) {
+                // ボタンクリック以外の場合は詳細ページへ遷移
+                if (!e.target.closest('.btn')) {
+                    window.location.href = `detail.html?id=${item.id}`;
+                }
+            });
+
+            return card;
+        }
+
+        /**
+         * ローディング表示
+         */
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('noData').style.display = 'none';
+            document.getElementById('pdfGrid').style.display = 'none';
+        }
+
+        /**
+         * ローディング非表示
+         */
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        /**
+         * エラー表示
+         */
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message || 'データの読み込みに失敗しました';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('noData').style.display = 'none';
+            document.getElementById('pdfGrid').style.display = 'none';
+        }
+
+        /**
+         * データなし表示
+         */
+        function showNoData() {
+            document.getElementById('noData').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('pdfGrid').style.display = 'none';
+        }
+
+        /**
+         * 詳細ページへの遷移（カード全体クリック用）
+         */
+        function goToDetail(id) {
+            window.location.href = `detail.html?id=${id}`;
+        }
+
+        /**
+         * ページリフレッシュ
+         */
+        function refreshPage() {
+            window.location.reload();
+        }
+
+        // デバッグ用: コンソールでデータ確認
+        window.debugLoadData = loadPDFData;
     </script>
 </body>
 </html>
