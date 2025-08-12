@@ -343,7 +343,7 @@
                             `<div class="pdf-icon">📄</div>`
                         }
                     </div>
-                    <a href="#" class="pdf-title" onclick="showDetail(${index})">${item.title}</a>
+                    <a href="#" class="pdf-title" onclick="showDetail(${index})">${convertLineBreaks(item.title)}</a>
                     <div class="pdf-date">${formatDate(item.date)}</div>
                 </div>
             `).join('');
@@ -364,9 +364,9 @@
                             `<div class="pdf-icon">📄</div>`
                         }
                     </div>
-                    <h1 class="detail-title">${item.title}</h1>
+                    <h1 class="detail-title">${convertLineBreaks(item.title)}</h1>
                     <div class="detail-date">${formatDate(item.date)}</div>
-                    <div class="detail-description">${item.content}</div>
+                    <div class="detail-description">${convertLineBreaks(item.content)}</div>
                     <a href="${item.pdfUrl}" target="_blank" class="pdf-link">PDFを開く</a>
                 </div>
             `;
@@ -381,6 +381,12 @@
             const date = new Date(dateStr);
             if (isNaN(date.getTime())) return dateStr;
             return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+        }
+
+        // 改行文字をHTMLの<br>タグに変換
+        function convertLineBreaks(text) {
+            if (!text) return '';
+            return text.toString().replace(/\n/g, '<br>');
         }
 
         // エラーハンドリング
