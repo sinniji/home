@@ -397,11 +397,27 @@
 
             // JSONPを使用してGASからデータを取得
             const script = document.createElement('script');
-            script.src = GAS_API_URL + '?callback=handlePdfData&action=getData';
-            document.head.appendChild(script);
+            const timestamp = new Date().getTime();
+            script.src = GAS_API_URL + '?callback=handlePdfData&action=getData&t=' + timestamp;
+            
+            // エラーハンドリング
+            script.onerror = function() {
+                loading.style.display = 'none';
+                container.innerHTML = '<p>データの読み込みに失敗しました。しばらくしてから再度お試しください。</p>';
+                document.head.removeChild(script);
+            };
 
-            // スクリプトタグを削除（メモリリーク防止）
-            script.onload = () => document.head.removeChild(script);
+            // 成功時の処理
+            script.onload = function() {
+                // スクリプトタグを削除（メモリリーク防止）
+                setTimeout(() => {
+                    if (document.head.contains(script)) {
+                        document.head.removeChild(script);
+                    }
+                }, 1000);
+            };
+
+            document.head.appendChild(script);
         }
 
         // JSONPコールバック関数
