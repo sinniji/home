@@ -25,45 +25,6 @@
             padding: 20px;
         }
 
-        /* ナビゲーションバー */
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-            transform: translateY(-2px);
-        }
-
-        .nav-links a.active {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-
         /* メインコンテンツ */
         .main-content {
             background: rgba(255, 255, 255, 0.95);
@@ -222,6 +183,21 @@
             transform: translateY(-2px);
         }
 
+        .pdf-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-link:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
         /* ローディングスタイル */
         .loading {
             text-align: center;
@@ -245,11 +221,6 @@
 
         /* レスポンシブデザイン */
         @media (max-width: 768px) {
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9rem;
-            }
-
             .pdf-grid {
                 grid-template-columns: 1fr;
                 gap: 1rem;
@@ -272,17 +243,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- ナビゲーションバー -->
-        <nav class="navbar">
-            <ul class="nav-links">
-                <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
-                <li><a href="#" onclick="showPage('venues')">会場一覧</a></li>
-                <li><a href="#" onclick="showPage('members')">会員専用</a></li>
-                <li><a href="#" onclick="showPage('courses')">講座専用</a></li>
-                <li><a href="#" onclick="showPage('contact')">問合せ</a></li>
-            </ul>
-        </nav>
-
         <!-- メインコンテンツ -->
         <main class="main-content">
             <!-- ホームページ -->
@@ -298,30 +258,9 @@
             <!-- 詳細ページ -->
             <div id="detail-page" class="page detail-page">
                 <div class="detail-content">
-                    <button class="back-button" onclick="showPage('home')">← 戻る</button>
+                    <button class="back-button" onclick="showHome()">← 戻る</button>
                     <div id="detail-content"></div>
                 </div>
-            </div>
-
-            <!-- その他のページ（プレースホルダー） -->
-            <div id="venues-page" class="page" style="display: none;">
-                <h1 class="page-title">会場一覧</h1>
-                <p>会場一覧ページの内容をここに表示します。</p>
-            </div>
-
-            <div id="members-page" class="page" style="display: none;">
-                <h1 class="page-title">会員専用</h1>
-                <p>会員専用ページの内容をここに表示します。</p>
-            </div>
-
-            <div id="courses-page" class="page" style="display: none;">
-                <h1 class="page-title">講座専用</h1>
-                <p>講座専用ページの内容をここに表示します。</p>
-            </div>
-
-            <div id="contact-page" class="page" style="display: none;">
-                <h1 class="page-title">問合せ</h1>
-                <p>問合せページの内容をここに表示します。</p>
             </div>
         </main>
     </div>
@@ -331,31 +270,10 @@
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzdau9dPTm63euUx2V_MTwjJSx52038GX-RUIgR9QkDoeDK5BcYTYS4iYQ6XUshyjB0/exec';
         let pdfData = [];
 
-        // ページ切り替え機能
-        function showPage(pageId) {
-            // すべてのページを非表示
-            document.querySelectorAll('.page').forEach(page => {
-                page.style.display = 'none';
-            });
-
-            // ナビゲーションリンクのアクティブ状態を更新
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            // 指定されたページを表示
-            const targetPage = document.getElementById(pageId + '-page');
-            if (targetPage) {
-                targetPage.style.display = 'block';
-            }
-
-            // クリックされたリンクをアクティブにする
-            event.target.classList.add('active');
-
-            // ホームページの場合はデータを読み込む
-            if (pageId === 'home') {
-                loadPdfData();
-            }
+        // ホームページに戻る機能
+        function showHome() {
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('detail-page').style.display = 'none';
         }
 
         // PDFデータをGASから取得
@@ -407,7 +325,7 @@
             displayPdfCards(data);
         }
 
-        // PDFカードを表示（内容とPDFリンクを削除）
+        // PDFカードを表示
         function displayPdfCards(data) {
             const container = document.getElementById('pdf-container');
             
@@ -453,7 +371,8 @@
                 </div>
             `;
 
-            showPage('detail');
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('detail-page').style.display = 'block';
         }
 
         // 日付をフォーマット
